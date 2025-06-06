@@ -92,15 +92,21 @@ final class MovieQuizViewController: UIViewController {
       imageView.image = step.image
       textLabel.text = step.question
       counterLabel.text = step.questionNumber
+        
+        imageView.layer.borderWidth = 0
+        
+        yesButton.isEnabled = true
+        noButton.isEnabled = true
     }
     
     // приватный метод, который меняет цвет рамки
     // принимает на вход булевое значение и ничего не возвращает
     private func showAnswerResult(isCorrect: Bool) {
         imageView.layer.masksToBounds = true // даём разрешение на рисование рамки
-        imageView.layer.borderWidth = 1 // толщина рамки
-        imageView.layer.borderColor = UIColor.white.cgColor // делаем рамку белой
-        imageView.layer.cornerRadius = 6 // радиус скругления углов рамки
+        imageView.layer.cornerRadius = 20 // радиус скругления углов рамки
+        
+        yesButton.isEnabled = false
+        noButton.isEnabled = false
         
             if isCorrect {
                 correctAnswers += 1
