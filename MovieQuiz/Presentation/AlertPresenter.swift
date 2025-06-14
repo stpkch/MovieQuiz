@@ -9,10 +9,6 @@ import Foundation
 import UIKit
 
 
-protocol AlertPresenterDelegate: AnyObject {
-    func present(alert: UIAlertController)
-}
-
 class AlertPresenter {
     weak var delegate: AlertPresenterDelegate?
     

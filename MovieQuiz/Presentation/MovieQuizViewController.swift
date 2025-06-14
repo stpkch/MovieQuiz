@@ -37,29 +37,23 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var statisticService: StatisticServiceProtocol?
-
+    private var alertPresenter: AlertPresenter?
     
     private func show(quiz result: QuizResultsViewModel) {
-        let alert = UIAlertController(
+        let alertModel = AlertModel(
             title: result.title,
             message: result.text,
-            preferredStyle: .alert)
-
-        let action = UIAlertAction(title: result.buttonText, style: .default) { [weak self] _ in // слабая ссылка на self
-            guard let self = self else { return } // разворачиваем слабую ссылку
-
-            self.currentQuestionIndex = 0
-            self.correctAnswers = 0
-
-            questionFactory?.requestNextQuestion()
-            
-            func present(alert: UIAlertController) {
-                self.present(alert, animated: true, completion: nil)
+            buttonText: result.buttonText,
+            completion: { [weak self] in
+                guard let self = self else { return }
+                self.currentQuestionIndex = 0
+                self.correctAnswers = 0
+                self.questionFactory?.requestNextQuestion()
             }
-        }
+        )
 
-        alert.addAction(action)
-        self.present(alert, animated: true, completion: nil)
+        alertPresenter?.displayAlert(model: alertModel)
+
     }
     
     
@@ -80,6 +74,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         
         yesButton.isEnabled = true
         noButton.isEnabled = true
+        
+        imageView.layer.masksToBounds = true
+        imageView.layer.cornerRadius = 20
     }
     
     // приватный метод, который меняет цвет рамки
@@ -148,7 +145,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        alertPresenter = AlertPresenter(delegate: self)
         statisticService = StatisticService()
+        
 
         
             let questionFactory = QuestionFactory() // 2
