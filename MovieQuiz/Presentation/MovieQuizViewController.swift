@@ -5,6 +5,7 @@ import UIKit
 final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, AlertPresenterDelegate  {
     // MARK: - Данные (массив вопросов)
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private var counterLabel: UILabel!
     @IBOutlet private var textLabel: UILabel!
     @IBOutlet private var imageView: UIImageView!
@@ -30,6 +31,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         }
     
     
+    private func showLoadingIndicator() {
+        activityIndicator.isHidden = false // говорим, что индикатор загрузки не скрыт
+        activityIndicator.startAnimating() // включаем анимацию
+    }
     private var currentQuestionIndex = 0
     
     private var correctAnswers = 0
@@ -38,6 +43,35 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     private var currentQuestion: QuizQuestion?
     private var statisticService: StatisticServiceProtocol?
     private var alertPresenter: AlertPresenter?
+    func didLoadDataFromServer() {
+        activityIndicator.isHidden = true // скрываем индикатор загрузки
+        questionFactory?.requestNextQuestion()
+    }
+
+    func didFailToLoadData(with error: Error) {
+        showNetworkError(message: error.localizedDescription) // возьмём в качестве сообщения описание ошибки
+    }
+    
+    private func hideLoadingIndicator () {
+        activityIndicator.stopAnimating()
+    }
+    private func showNetworkError(message: String) {
+        hideLoadingIndicator()
+        
+        let model = AlertModel(title: "Ошибка",
+                               message: message,
+                               buttonText: "Попробовать еще раз") { [weak self] in
+            guard let self = self else { return }
+            
+            self.currentQuestionIndex = 0
+            self.correctAnswers = 0
+            
+            self.questionFactory?.requestNextQuestion()
+        }
+        
+        alertPresenter?.displayAlert(model: model)
+
+    }
     
     private func show(quiz result: QuizResultsViewModel) {
         let alertModel = AlertModel(
@@ -58,11 +92,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        let questionStep = QuizStepViewModel(
-            image: UIImage(named: model.image) ?? UIImage(),
+        return QuizStepViewModel(
+            image: UIImage(data: model.image) ?? UIImage(),
             question: model.text,
             questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
-        return questionStep
     }
     
     private func show(quiz step: QuizStepViewModel) {
@@ -78,6 +111,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 20
     }
+    
+
     
     // приватный метод, который меняет цвет рамки
     // принимает на вход булевое значение и ничего не возвращает
@@ -144,22 +179,20 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        yesButton.layer.cornerRadius = 15
+        noButton.layer.cornerRadius = 15
+        imageView.layer.cornerRadius = 20
+        yesButton.clipsToBounds = true
+        noButton.clipsToBounds = true
         
+        
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
+        showLoadingIndicator()
+        questionFactory?.loadData()
         alertPresenter = AlertPresenter(delegate: self)
         statisticService = StatisticService()
         
 
-        
-            let questionFactory = QuestionFactory() // 2
-            questionFactory.setup(delegate: self)         // 3
-            self.questionFactory = questionFactory  // 4
-
-        questionFactory.requestNextQuestion()
-        
-        yesButton.layer.cornerRadius = 15
-        noButton.layer.cornerRadius = 15
-        yesButton.clipsToBounds = true
-        noButton.clipsToBounds = true
     }
     
     
