@@ -103,10 +103,15 @@
                                     <constraint firstAttribute="height" constant="60" id="zgp-X2-Pdx"/>
                                 </constraints>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="c4T-Bm-uZt">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
+                            <constraint firstItem="c4T-Bm-uZt" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="6hI-Tf-n14"/>
+                            <constraint firstItem="c4T-Bm-uZt" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="9m8-tD-DGi"/>
                             <constraint firstItem="QDU-xX-QfF" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="DbA-mN-Agh"/>
                             <constraint firstItem="gbN-m9-gSU" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Hs0-tu-CYT"/>
                             <constraint firstItem="QDU-xX-QfF" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="Iah-5J-dv4"/>
@@ -116,6 +121,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="c4T-Bm-uZt" id="SXY-p4-GUw"/>
                         <outlet property="counterLabel" destination="Kwk-ux-dsc" id="xsQ-Oq-v57"/>
                         <outlet property="imageView" destination="3sd-fO-oFR" id="I67-6G-f1z"/>
                         <outlet property="noButton" destination="fFa-Gh-ZZi" id="1OP-CU-KKM"/>
