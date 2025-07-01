@@ -13,3 +13,4 @@ protocol QuestionFactoryDelegate: AnyObject {
     func didFailToLoadData(with error: Error)
 }
 
+

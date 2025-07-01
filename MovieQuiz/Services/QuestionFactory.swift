@@ -11,7 +11,7 @@ import UIKit
 class QuestionFactory: QuestionFactoryProtocol {
     private let moviesLoader: MoviesLoading
     
-    weak var delegate: QuestionFactoryDelegate?
+    private var delegate: QuestionFactoryDelegate?
     
     private var movies: [MostPopularMovie] = []
 
@@ -93,7 +93,7 @@ class QuestionFactory: QuestionFactoryProtocol {
             var imageData = Data()
             
             do {
-                imageData = try Data(contentsOf: movie.imageURL)
+                imageData = try Data(contentsOf: movie.resizedImageURL)
             } catch {
                 print("Failed to load image")
             }
@@ -106,6 +106,8 @@ class QuestionFactory: QuestionFactoryProtocol {
             let question = QuizQuestion(image: imageData,
                                          text: text,
                                          correctAnswer: correctAnswer)
+            
+            print("Image loaded: \(imageData.count) байт")
             
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
