@@ -7,7 +7,6 @@
 
 import Foundation
 
-// MARK: - Модель вопроса
 struct QuizQuestion {
     let image: Data
     let text: String
