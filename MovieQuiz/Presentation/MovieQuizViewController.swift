@@ -14,6 +14,10 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        yesButton.accessibilityIdentifier = "Yes"
+        noButton.accessibilityIdentifier = "No"
+        imageView.accessibilityIdentifier = "Poster"
+        counterLabel.accessibilityIdentifier = "Index"
 
         presenter = MovieQuizPresenter(viewController: self)
 
